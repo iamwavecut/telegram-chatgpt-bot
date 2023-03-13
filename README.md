@@ -13,7 +13,7 @@ The easiest way to self-host the bot is to build a Docker image and run it on a 
 
 You will need to provide the following arguments to the build command:
 ```shell
-docker build -t net-nebot . --build-arg OPENAI_API_KEY=<your_api_key> --build-arg TELEGRAM_BOT_TOKEN=<your_bot_token>
+docker build -t net-nebot . --build-arg OPENAI_TOKEN=<your_api_token> --build-arg BOT_TOKEN=<your_bot_token>
 ```
 
 You can also run the bot locally
