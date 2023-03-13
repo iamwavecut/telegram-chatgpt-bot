@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"regexp"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -64,7 +65,7 @@ func run(ctx context.Context) error {
 			tgb.ChatType(tg.ChatTypeGroup, tg.ChatTypeSupergroup),
 			tgb.Regexp(regexp.MustCompile("(?mi)("+me.FirstName+"|/start|/start"+me.Username.PeerID()+")")),
 		)
-	tool.Console("starting")
+	tool.Console("started")
 	return tgb.NewPoller(
 		router,
 		client,
@@ -74,7 +75,6 @@ func run(ctx context.Context) error {
 
 func handleStart(botName string) func(ctx context.Context, msg *tgb.MessageUpdate) error {
 	return func(ctx context.Context, msg *tgb.MessageUpdate) error {
-		tool.Console("start")
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
 		chatID := "chat_" + msg.From.ID.PeerID()
 		reg.Delete(chatID)
@@ -101,9 +101,10 @@ func handleStart(botName string) func(ctx context.Context, msg *tgb.MessageUpdat
 	}
 }
 
+var lock = &sync.Mutex{}
+
 func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Client) func(ctx context.Context, msg *tgb.MessageUpdate) error {
 	return func(ctx context.Context, msg *tgb.MessageUpdate) error {
-		tool.Console("answer")
 		result := make(chan string)
 		ctx, cancel := context.WithTimeout(ctx, time.Second*60)
 		defer cancel()
@@ -126,6 +127,9 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 				Name:    sanitizeName(getFullName(msg.From)),
 			})
 			reg.Set(chatID, chatHistory)
+
+			lock.Lock()
+			defer lock.Unlock()
 
 			resp := tool.MustReturn(
 				openaiClient.CreateChatCompletion(
@@ -167,7 +171,6 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 				if !isOpen && responseText == "" {
 					responseText = i18n.Get("Sorry, I don't have an answer.", lang)
 				}
-				tool.Console(responseText)
 				err := msg.Answer(responseText).ParseMode(tg.MD).DoVoid(ctx)
 				if tool.Try(err) {
 					tool.Console(err)
@@ -183,7 +186,6 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 
 func handlePublic(me *tg.User) func(ctx context.Context, msg *tgb.MessageUpdate) error {
 	return func(ctx context.Context, msg *tgb.MessageUpdate) error {
-		tool.Console("public")
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
 
 		layout := tg.NewButtonLayout[tg.InlineKeyboardButton](1).Row(
