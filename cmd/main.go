@@ -41,7 +41,8 @@ const (
 		"as ChatGPT was designed to be used in dialogues. " +
 		"Please message me in private."
 
-	DurationTyping = 8 * time.Second
+	DurationTyping       = 8 * time.Second
+	DurationRetryRequest = 5 * time.Second
 
 	openaiMaxTokens        = 500
 	openaiTemperature      = 1
@@ -51,6 +52,7 @@ const (
 	openaiFrequencyPenalty = 0.2
 
 	IntChatHistoryLength = 10
+	IntRetryAttempts     = 5
 )
 
 func main() {
@@ -140,7 +142,13 @@ func handlePrivate(
 		defer cancel()
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
 
-		go apiRequestRoutine(botName, lang, msg, openaiClient, result)
+		go tool.Must(
+			tool.RetryFunc(
+				IntRetryAttempts,
+				DurationRetryRequest,
+				func() error { return apiRequestRoutine(botName, lang, msg, openaiClient, result) },
+			),
+		)
 
 		_ = client.SendChatAction(msg.Chat.ID, tg.ChatActionTyping).DoVoid(ctx)
 		for {
@@ -163,7 +171,13 @@ func handlePrivate(
 	}
 }
 
-func apiRequestRoutine(botName, lang string, msg *tgb.MessageUpdate, openaiClient *openai.Client, result chan string) error {
+func apiRequestRoutine(
+	botName,
+	lang string,
+	msg *tgb.MessageUpdate,
+	openaiClient *openai.Client,
+	result chan string,
+) error {
 	chatID := "chat_" + msg.From.ID.PeerID()
 	chatHistory := reg.Get(chatID, []openai.ChatCompletionMessage{})
 	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
