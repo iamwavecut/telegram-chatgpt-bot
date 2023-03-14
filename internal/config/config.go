@@ -14,8 +14,8 @@ type Config struct {
 	DefaultLanguage  string `env:"LANG,default=en"`
 }
 
-var once sync.Once
-var globalConfig = &Config{}
+var once sync.Once           //nolint:gochecknoglobals // desired behavior
+var globalConfig = &Config{} //nolint:gochecknoglobals // desired behavior
 
 func Get() Config {
 	once.Do(func() {

@@ -20,7 +20,7 @@ func MonitorExecutable() chan struct{} {
 		originalTime := stat.ModTime()
 		for {
 			time.Sleep(checkExecInterval)
-			stat, _ := os.Stat(exeFilename)
+			stat, _ = os.Stat(exeFilename)
 			if !originalTime.Equal(stat.ModTime()) {
 				ch <- struct{}{}
 				return

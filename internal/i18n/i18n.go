@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var state = struct {
+var state = struct { //nolint:gochecknoglobals // desired behavior
 	translations       map[string]map[string]string // [key][lang][translation]
 	defaultLanguage    string
 	availableLanguages []string
@@ -23,11 +23,7 @@ var state = struct {
 	availableLanguages: []string{"en"},
 }
 
-func GetLanguagesList() []string {
-	return state.availableLanguages[:]
-}
-
-var initialize sync.Once
+var initialize sync.Once //nolint:gochecknoglobals // desired behavior
 
 func Get(key, lang string) string {
 	initialize.Do(func() {
@@ -39,7 +35,7 @@ func Get(key, lang string) string {
 			log.WithError(err).Errorln("cant load translations")
 			return
 		}
-		if err := yaml.Unmarshal(i18n, &(state.translations)); err != nil {
+		if err = yaml.Unmarshal(i18n, &(state.translations)); err != nil {
 			log.WithError(err).Errorln("cant unmarshal translations")
 			return
 		}
@@ -56,7 +52,7 @@ func Get(key, lang string) string {
 		log.Traceln("languages count:", len(state.availableLanguages))
 	})
 
-	if "en" == lang {
+	if lang == "en" {
 		return key
 	}
 	if res, ok := state.translations[key][strings.ToUpper(lang)]; ok {
