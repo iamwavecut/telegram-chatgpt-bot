@@ -13,12 +13,12 @@ The easiest way to self-host the bot is to build a Docker image and run it on a 
 
 You will need to provide the following arguments to the build command:
 ```shell
-docker build -t net-nebot . --build-arg OPENAI_TOKEN=<your_api_token> --build-arg BOT_TOKEN=<your_bot_token>
+docker build -t telegram-chatgpt-bot . --build-arg OPENAI_TOKEN=<your_api_token> --build-arg BOT_TOKEN=<your_bot_token>
 ```
 
 You can also run the bot locally
 ```shell
-docker run -d --name net-nebot net-nebot
+docker run -d --name --restart=always telegram-chatgpt-bot telegram-chatgpt-bot
 ```
 ---
 ## Translations
