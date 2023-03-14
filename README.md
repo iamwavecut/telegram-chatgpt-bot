@@ -22,4 +22,4 @@ docker run -d --name --restart=always telegram-chatgpt-bot telegram-chatgpt-bot
 ```
 ---
 ## Translations
-The bot is currently available in the following languages: English, Russian, Belarusian, Ukrainian. Feel free to contribute translations for other languages!
+The bot is currently available in the following languages: English, Russian, Belarusian, Ukrainian. Feel free to contribute translations for other languages! The ChatGPT API itself understands a lot more languages, so go give it a try!
