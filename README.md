@@ -18,7 +18,7 @@ docker build -t telegram-chatgpt-bot . --build-arg OPENAI_TOKEN=<your_api_token>
 
 You can also run the bot locally
 ```shell
-docker run -d --name --restart=always telegram-chatgpt-bot telegram-chatgpt-bot
+docker run -d --restart always --name  telegram-chatgpt-bot telegram-chatgpt-bot
 ```
 ---
 ## Translations
