@@ -185,6 +185,9 @@ func apiRequestRoutine(
 		Content: msg.Text,
 		Name:    sanitizeName(getFullName(msg.From)),
 	})
+	if len(chatHistory) > IntChatHistoryLength {
+		chatHistory = chatHistory[len(chatHistory)-IntChatHistoryLength:]
+	}
 	reg.Set(chatID, chatHistory)
 
 	lock.Lock()
@@ -193,8 +196,19 @@ func apiRequestRoutine(
 	resp, err := openaiClient.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:            openai.GPT3Dot5Turbo,
-			Messages:         chatHistory,
+			Model: openai.GPT3Dot5Turbo,
+			Messages: append([]openai.ChatCompletionMessage{
+				{
+					Role: "system",
+					Content: "Instruction:\n" +
+						"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
+						"You're chatting in an online chat with a human named " +
+						sanitizeName(getFullName(msg.From)) +
+						`, who's language code is "` + lang + `". \n` +
+						"You're genderfluid person, tending to self-identify mostly as female.\n" +
+						"Do not introduce yourself, just answer the user concisely.\n\n",
+				},
+			}, chatHistory...),
 			MaxTokens:        openaiMaxTokens,
 			Temperature:      openaiTemperature,
 			TopP:             openaiTopP,
@@ -209,6 +223,7 @@ func apiRequestRoutine(
 	}
 	if len(resp.Choices) == 0 {
 		close(result)
+		return nil
 	}
 	botResponseText := resp.Choices[0].Message.Content
 	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
@@ -216,22 +231,8 @@ func apiRequestRoutine(
 		Name:    sanitizeName(botName),
 		Content: botResponseText,
 	})
-	if len(chatHistory) > IntChatHistoryLength {
-		chatHistory = chatHistory[len(chatHistory)-IntChatHistoryLength:]
-	}
 	reg.Set(chatID, chatHistory)
-	chatHistory = append([]openai.ChatCompletionMessage{
-		{
-			Role: "system",
-			Content: "Instruction:\n" +
-				"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
-				"You're chatting in an online chat with a human named " +
-				sanitizeName(getFullName(msg.From)) +
-				`, who's language code is "` + lang + `". \n` +
-				"You're genderfluid person, tending to self-identify mostly as female.\n" +
-				"Do not introduce yourself, just answer the user concisely.\n\n",
-		},
-	}, chatHistory...)
+
 	result <- botResponseText
 	return nil
 }
