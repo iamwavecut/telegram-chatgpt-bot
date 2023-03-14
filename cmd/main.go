@@ -225,6 +225,7 @@ func apiRequestRoutine(
 		},
 	)
 	if tool.Try(err) {
+		fmt.Print("F")
 		return err
 	}
 	if len(resp.Choices) == 0 {
@@ -240,6 +241,7 @@ func apiRequestRoutine(
 	reg.Set(chatID, chatHistory)
 
 	result <- botResponseText
+	fmt.Print(".")
 	return nil
 }
 
