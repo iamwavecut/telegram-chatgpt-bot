@@ -163,21 +163,9 @@ func handlePrivate(
 	}
 }
 
-func apiRequestRoutine(botName, lang string, msg *tgb.MessageUpdate, openaiClient *openai.Client, result chan string) {
-	defaultChatCompletionMessage := openai.ChatCompletionMessage{
-		Role: "system",
-		Content: "Instruction:\n" +
-			"Your name is " + sanitizeName(botName) + ". \n" +
-			"You're chatting in an online chat with a human named " +
-			sanitizeName(getFullName(msg.From)) +
-			", who's language code is \"" + lang + "\". \n" +
-			"You're genderfluent person\n" +
-			"Do not introduce yourself, just answer the user concisely.\n\n",
-	}
+func apiRequestRoutine(botName, lang string, msg *tgb.MessageUpdate, openaiClient *openai.Client, result chan string) error {
 	chatID := "chat_" + msg.From.ID.PeerID()
-	chatHistory := reg.Get(chatID, []openai.ChatCompletionMessage{
-		defaultChatCompletionMessage,
-	})
+	chatHistory := reg.Get(chatID, []openai.ChatCompletionMessage{})
 	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
 		Role:    "user",
 		Content: msg.Text,
@@ -188,22 +176,23 @@ func apiRequestRoutine(botName, lang string, msg *tgb.MessageUpdate, openaiClien
 	lock.Lock()
 	defer lock.Unlock()
 
-	resp := tool.MustReturn(
-		openaiClient.CreateChatCompletion(
-			context.Background(),
-			openai.ChatCompletionRequest{
-				Model:            openai.GPT3Dot5Turbo,
-				Messages:         chatHistory,
-				MaxTokens:        openaiMaxTokens,
-				Temperature:      openaiTemperature,
-				TopP:             openaiTopP,
-				N:                openaiN,
-				Stream:           false,
-				PresencePenalty:  openaiPresencePenalty,
-				FrequencyPenalty: openaiFrequencyPenalty,
-			},
-		),
+	resp, err := openaiClient.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model:            openai.GPT3Dot5Turbo,
+			Messages:         chatHistory,
+			MaxTokens:        openaiMaxTokens,
+			Temperature:      openaiTemperature,
+			TopP:             openaiTopP,
+			N:                openaiN,
+			Stream:           false,
+			PresencePenalty:  openaiPresencePenalty,
+			FrequencyPenalty: openaiFrequencyPenalty,
+		},
 	)
+	if tool.Try(err) {
+		return err
+	}
 	if len(resp.Choices) == 0 {
 		close(result)
 	}
@@ -214,13 +203,23 @@ func apiRequestRoutine(botName, lang string, msg *tgb.MessageUpdate, openaiClien
 		Content: botResponseText,
 	})
 	if len(chatHistory) > IntChatHistoryLength {
-		chatHistory = append(
-			[]openai.ChatCompletionMessage{defaultChatCompletionMessage},
-			chatHistory[len(chatHistory)-(IntChatHistoryLength+1):]...,
-		)
+		chatHistory = chatHistory[len(chatHistory)-IntChatHistoryLength:]
 	}
 	reg.Set(chatID, chatHistory)
+	chatHistory = append([]openai.ChatCompletionMessage{
+		{
+			Role: "system",
+			Content: "Instruction:\n" +
+				"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
+				"You're chatting in an online chat with a human named " +
+				sanitizeName(getFullName(msg.From)) +
+				`, who's language code is "` + lang + `". \n` +
+				"You're genderfluid person, tending to self-identify mostly as female.\n" +
+				"Do not introduce yourself, just answer the user concisely.\n\n",
+		},
+	}, chatHistory...)
 	result <- botResponseText
+	return nil
 }
 
 func handlePublic(me *tg.User) func(ctx context.Context, msg *tgb.MessageUpdate) error {
