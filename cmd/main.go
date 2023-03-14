@@ -40,6 +40,9 @@ const (
 	StrNoPublic = "Unfortunately, I work terrible in groups, " +
 		"as ChatGPT was designed to be used in dialogues. " +
 		"Please message me in private."
+	StrRequestError = "Unfortunately, there was an error during the request. " +
+		"Please try again later. If it doesn't help, " +
+		"please contact the bot's maintainer."
 
 	DurationTyping       = 8 * time.Second
 	DurationRetryRequest = 5 * time.Second
@@ -141,14 +144,18 @@ func handlePrivate(
 		ctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
+		lock.Lock()
+		defer lock.Unlock()
 
-		go tool.Must(
-			tool.RetryFunc(
-				IntRetryAttempts,
-				DurationRetryRequest,
-				func() error { return apiRequestRoutine(botName, lang, msg, openaiClient, result) },
-			),
-		)
+		go time.AfterFunc(time.Second, func() {
+			tool.Must(
+				tool.RetryFunc(
+					IntRetryAttempts,
+					DurationRetryRequest,
+					func() error { return apiRequestRoutine(botName, lang, msg, openaiClient, result) },
+				),
+			)
+		})
 
 		_ = client.SendChatAction(msg.Chat.ID, tg.ChatActionTyping).DoVoid(ctx)
 		for {
@@ -159,7 +166,8 @@ func handlePrivate(
 				}
 				err := msg.Answer(responseText).ParseMode(tg.MD).DoVoid(ctx)
 				if tool.Try(err) {
-					tool.Console(err)
+					tool.Console(err, responseText)
+					tool.Try(msg.Answer(StrRequestError).ParseMode(tg.MD).DoVoid(ctx), true)
 				}
 				return err
 			case <-ctx.Done():
@@ -190,9 +198,6 @@ func apiRequestRoutine(
 	}
 	reg.Set(chatID, chatHistory)
 
-	lock.Lock()
-	defer lock.Unlock()
-
 	resp, err := openaiClient.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -206,6 +211,7 @@ func apiRequestRoutine(
 						sanitizeName(getFullName(msg.From)) +
 						`, who's language code is "` + lang + `". \n` +
 						"You're genderfluid person, tending to self-identify mostly as female.\n" +
+						"You should send valid markdown text every time.\n" +
 						"Do not introduce yourself, just answer the user concisely.\n\n",
 				},
 			}, chatHistory...),
