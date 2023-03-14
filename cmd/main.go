@@ -110,16 +110,17 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 		defer cancel()
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
 		go func() {
+			defaulltChatCompletionMessage := openai.ChatCompletionMessage{
+				Role: "system",
+				Content: "Instruction:\n" +
+					"Your name is " + sanitizeName(botName) + ". \n" +
+					"You're chatting in an online chat with a human named " + sanitizeName(getFullName(msg.From)) + ", who's language code is \"" + lang + "\". \n" +
+					"You're genderfluent person\n" +
+					"Do not introduce yourself, just answer the user.\n\n",
+			}
 			chatID := "chat_" + msg.From.ID.PeerID()
 			chatHistory := reg.Get(chatID, []openai.ChatCompletionMessage{
-				{
-					Role: "system",
-					Content: "Instruction:\n" +
-						"Your name is " + sanitizeName(botName) + ". \n" +
-						"You're chatting in an online chat with a human named " + sanitizeName(getFullName(msg.From)) + ", who's language code is \"" + lang + "\". \n" +
-						"You're genderfluent person\n" +
-						"Do not introduce yourself, just answer the user.\n\n",
-				},
+				defaulltChatCompletionMessage,
 			})
 			chatHistory = append(chatHistory, openai.ChatCompletionMessage{
 				Role:    "user",
@@ -157,7 +158,7 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 				Content: botResponseText,
 			})
 			if len(chatHistory) > 10 {
-				chatHistory = chatHistory[len(chatHistory)-10:]
+				chatHistory = append([]openai.ChatCompletionMessage{defaulltChatCompletionMessage}, chatHistory[len(chatHistory)-11:]...)
 			}
 			reg.Set(chatID, chatHistory)
 			result <- botResponseText
@@ -175,6 +176,7 @@ func handlePrivate(botName string, client *tg.Client, openaiClient *openai.Clien
 				if tool.Try(err) {
 					tool.Console(err)
 				}
+				return err
 			case <-ctx.Done():
 				return msg.Answer(i18n.Get("I'm sorry, but this takes an unacceptable duration of time to answer. Request aborted.", lang)).ParseMode(tg.MD).DoVoid(ctx)
 			case <-time.After(time.Second * 8):
