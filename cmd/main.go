@@ -192,7 +192,7 @@ func apiRequestRoutine(
 	var modelVersion string
 	switch config.Get().ChatGPTVersion {
 	case chatGPT4:
-		modelVersion = openai.GPT432K
+		modelVersion = openai.GPT4
 	default:
 		modelVersion = openai.GPT3Dot5Turbo
 	}
