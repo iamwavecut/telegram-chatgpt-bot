@@ -13,7 +13,10 @@ The easiest way to self-host the bot is to build a Docker image and run it on a 
 
 You will need to provide the following arguments to the build command:
 ```shell
-docker build -t telegram-chatgpt-bot . --build-arg OPENAI_TOKEN=<required, your_api_token> --build-arg BOT_TOKEN=<required, your_bot_token> --build-arg CHATGPT_VERSION=<optional, 3.5 | 4> 
+docker build -t telegram-chatgpt-bot . \
+  --build-arg OPENAI_TOKEN=<required, your_api_token> \
+  --build-arg BOT_TOKEN=<required, your_bot_token> \
+  --build-arg CHATGPT_VERSION=<optional, 3.5 | 4> 
 ```
 
 You can also run the bot locally
