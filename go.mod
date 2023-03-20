@@ -9,6 +9,7 @@ require (
 	github.com/sashabaranov/go-openai v1.5.3
 	github.com/sethvargo/go-envconfig v0.9.0
 	github.com/sirupsen/logrus v1.9.0
+	golang.org/x/time v0.3.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

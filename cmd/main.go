@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"regexp"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 
@@ -17,6 +16,7 @@ import (
 	"github.com/mr-linch/go-tg/tgb"
 	"github.com/sashabaranov/go-openai"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/time/rate"
 
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/config"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/i18n"
@@ -56,6 +56,8 @@ const (
 
 	IntChatHistoryLength = 10
 	IntRetryAttempts     = 5
+
+	minTimeBetweenRequests = 6 * time.Second
 )
 
 func main() {
@@ -76,6 +78,7 @@ func main() {
 }
 
 func run(ctx context.Context) error {
+	rateLimiter := rate.NewLimiter(rate.Every(minTimeBetweenRequests), 1)
 	client := tg.New(config.Get().TelegramAPIToken)
 
 	me := tool.MustReturn(client.GetMe().Do(ctx))
@@ -90,7 +93,7 @@ func run(ctx context.Context) error {
 			tgb.ChatType(tg.ChatTypePrivate),
 		).
 		Message(
-			handlePrivate(botName, client, openaiClient),
+			handlePrivate(botName, client, openaiClient, rateLimiter),
 			tgb.ChatType(tg.ChatTypePrivate),
 		).
 		Message(
@@ -134,18 +137,16 @@ func handleStart(botName string) func(ctx context.Context, msg *tgb.MessageUpdat
 	}
 }
 
-var lock = sync.Mutex{} //nolint:gochecknoglobals // lock is a global lock
-
 func handlePrivate(
-	botName string, client *tg.Client, openaiClient *openai.Client,
+	botName string, client *tg.Client, openaiClient *openai.Client, rateLimiter *rate.Limiter,
 ) func(ctx context.Context, msg *tgb.MessageUpdate) error {
 	return func(ctx context.Context, msg *tgb.MessageUpdate) error {
 		result := make(chan string)
 		ctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
 		lang := tool.NonZero(msg.From.LanguageCode, config.Get().DefaultLanguage)
-		lock.Lock()
-		defer lock.Unlock()
+
+		tool.Must(rateLimiter.Wait(ctx))
 
 		go time.AfterFunc(time.Second, func() {
 			tool.Must(
