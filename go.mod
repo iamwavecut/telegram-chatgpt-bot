@@ -6,7 +6,7 @@ require (
 	github.com/alexsergivan/transliterator v1.0.0
 	github.com/iamwavecut/tool v1.0.7
 	github.com/mr-linch/go-tg v0.8.0
-	github.com/sashabaranov/go-openai v1.5.8
+	github.com/sashabaranov/go-openai v1.6.1
 	github.com/sethvargo/go-envconfig v0.9.0
 	github.com/sirupsen/logrus v1.9.0
 	golang.org/x/time v0.3.0
