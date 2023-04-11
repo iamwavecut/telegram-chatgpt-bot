@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"regexp"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -59,6 +60,8 @@ const (
 
 	minTimeBetweenRequests = 6 * time.Second
 )
+
+var counter uint64
 
 func main() {
 	ctx := context.Background()
@@ -237,7 +240,7 @@ func apiRequestRoutine(
 		},
 	)
 	if tool.Try(err) {
-		fmt.Print("F")
+		fmt.Print("F\n")
 		return err
 	}
 	if len(resp.Choices) == 0 {
@@ -254,6 +257,10 @@ func apiRequestRoutine(
 
 	result <- botResponseText
 	fmt.Print(".")
+	if counter%20 == 0 {
+		fmt.Print("\n")
+	}
+	atomic.AddUint64(&counter, 1)
 	return nil
 }
 
