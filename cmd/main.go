@@ -55,7 +55,7 @@ const (
 	openaiFrequencyPenalty = 0.2
 
 	IntChatHistoryLength = 10
-	IntRetryAttempts     = 5
+	IntRetryAttempts     = -1
 
 	minTimeBetweenRequests = 6 * time.Second
 )
