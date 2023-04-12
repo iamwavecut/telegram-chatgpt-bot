@@ -9,11 +9,13 @@ require (
 	github.com/sashabaranov/go-openai v1.7.0
 	github.com/sethvargo/go-envconfig v0.9.0
 	github.com/sirupsen/logrus v1.9.0
+	github.com/tiktoken-go/tokenizer v0.1.0
 	golang.org/x/time v0.3.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
+	github.com/dlclark/regexp2 v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect

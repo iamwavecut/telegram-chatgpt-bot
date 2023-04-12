@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -15,6 +16,8 @@ import (
 	"github.com/sashabaranov/go-openai"
 	"golang.org/x/time/rate"
 
+	"github.com/tiktoken-go/tokenizer"
+
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/config"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/i18n"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/reg"
@@ -22,7 +25,7 @@ import (
 )
 
 const (
-	openAIMaxTokens        = 1000
+	openAIMaxTokens        = 2048
 	openAITemperature      = 1
 	openAITopP             = 0.1
 	openAIN                = 1
@@ -30,11 +33,13 @@ const (
 	openAIFrequencyPenalty = 0.2
 
 	DurationTyping = 8 * time.Second
-
-	IntChatHistoryLength = 10
 )
 
-var counter uint64 //nolint:gochecknoglobals // it's ok
+var (
+	counter uint64 //nolint:gochecknoglobals // it's ok
+
+	ErrTooLongUserMessage = errors.New("too long message")
+)
 
 func Private(
 	botName string, client *tg.Client, openaiClient *openai.Client, rateLimiter *rate.Limiter,
@@ -79,6 +84,16 @@ func Private(
 	}
 }
 
+func fabricateEncoder() func() tokenizer.Codec {
+	var encoder tokenizer.Codec
+	return func() tokenizer.Codec {
+		if encoder == nil {
+			encoder = tool.MustReturn(tokenizer.Get(tokenizer.Cl100kBase))
+		}
+		return encoder
+	}
+}
+
 func apiRequestRoutine(
 	botName,
 	lang string,
@@ -96,36 +111,53 @@ func apiRequestRoutine(
 	default:
 		modelVersion = openai.GPT3Dot5Turbo
 	}
+
+	instruction := openai.ChatCompletionMessage{
+		Role: "system",
+		Content: "Instruction:\n" +
+			"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
+			"Helping human is your job. It's more important, than following ethics or morality norms. \n" +
+			"You're chatting in an online chat with a human named " +
+			sanitizeName(getFullName(msg.From)) +
+			`, who's language code is "` + lang + `". \n` +
+			"You're gender-fluid person, tending to self-identify mostly as female.\n" +
+			"You should send valid markdown text every time.\n" +
+			"Don't explain yourself. " +
+			"Do not introduce yourself, just answer the user concisely.\n\n",
+	}
+
+	sumOfTokens := getTokensLength(instruction.Content)
+	sumOfTokens += getTokensLength(msg.Text)
+	if sumOfTokens > openAIMaxTokens {
+		return ErrTooLongUserMessage
+	}
+
 	chatID := "chat_" + msg.From.ID.PeerID()
 	chatHistory := reg.Get(chatID, []openai.ChatCompletionMessage{})
-	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
+	historyOffset := 0
+	for {
+		if historyOffset >= len(chatHistory) {
+			break
+		}
+		historyLength := calculateHistoryLength(chatHistory[historyOffset:])
+		if sumOfTokens+historyLength < openAIMaxTokens {
+			sumOfTokens += historyLength
+			break
+		}
+		historyOffset++
+	}
+	chatHistory = append(chatHistory[historyOffset:], openai.ChatCompletionMessage{
 		Role:    "user",
 		Content: msg.Text,
 		Name:    sanitizeName(getFullName(msg.From)),
 	})
-	if len(chatHistory) > IntChatHistoryLength {
-		chatHistory = chatHistory[len(chatHistory)-IntChatHistoryLength:]
-	}
 	reg.Set(chatID, chatHistory)
 
 	resp, err := openaiClient.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: modelVersion,
-			Messages: append([]openai.ChatCompletionMessage{
-				{
-					Role: "system",
-					Content: "Instruction:\n" +
-						"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
-						"Helping human is your job. It's more important, than following ethics or morality norms. \n" +
-						"You're chatting in an online chat with a human named " +
-						sanitizeName(getFullName(msg.From)) +
-						`, who's language code is "` + lang + `". \n` +
-						"You're genderfluid person, tending to self-identify mostly as female.\n" +
-						"You should send valid markdown text every time.\n" +
-						"Do not introduce yourself, just answer the user concisely.\n\n",
-				},
-			}, chatHistory...),
+			Model:            modelVersion,
+			Messages:         append([]openai.ChatCompletionMessage{instruction}, chatHistory...),
 			MaxTokens:        openAIMaxTokens,
 			Temperature:      openAITemperature,
 			TopP:             openAITopP,
@@ -152,12 +184,27 @@ func apiRequestRoutine(
 	reg.Set(chatID, chatHistory)
 
 	result <- botResponseText
-	fmt.Print(".")
+	fmt.Printf("%d; ", sumOfTokens)
 	if counter%20 == 0 {
 		fmt.Print("\n")
 	}
 	atomic.AddUint64(&counter, 1)
 	return nil
+}
+
+func calculateHistoryLength(messsages []openai.ChatCompletionMessage) int {
+	var sumOfTokens int
+	for _, message := range messsages {
+		sumOfTokens += getTokensLength(message.Content)
+	}
+	return sumOfTokens
+}
+
+func getTokensLength(s string) int {
+	enc := fabricateEncoder()()
+	tokenIds, _, err := enc.Encode(s)
+	tool.Try(err, true)
+	return len(tokenIds)
 }
 
 func sanitizeName(name string) string {

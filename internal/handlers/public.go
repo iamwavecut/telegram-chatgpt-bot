@@ -23,6 +23,7 @@ func Public(me *tg.User) func(ctx context.Context, msg *tgb.MessageUpdate) error
 			i18n.Get(consts.StrNoPublic, msg.From.LanguageCode),
 		).
 			ParseMode(tg.MD).
+			ReplyToMessageID(msg.ID).
 			ReplyMarkup(tg.NewInlineKeyboardMarkup(layout.Keyboard()...)).
 			DoVoid(ctx)
 	}
