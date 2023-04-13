@@ -69,7 +69,7 @@ func Private(
 				if !isOpen && responseText == "" {
 					responseText = i18n.Get("Sorry, I don't have an answer.", lang)
 				}
-				err := msg.Answer(responseText).ParseMode(tg.MD).DoVoid(ctx)
+				err := msg.Answer(responseText).ParseMode(tg.HTML).DoVoid(ctx)
 				if tool.Try(err) {
 					tool.Console(err, responseText)
 					tool.Try(msg.Answer(consts.StrRequestError).ParseMode(tg.MD).DoVoid(ctx), true)
@@ -121,7 +121,12 @@ func apiRequestRoutine(
 			sanitizeName(getFullName(msg.From)) +
 			`, who's language code is "` + lang + `". \n` +
 			"You're gender-fluid person, tending to self-identify mostly as female.\n" +
-			"You should send valid markdown text every time.\n" +
+			"You should reply with valid HTML markup every time. " +
+			"Use only allowed tags, which are:\n" +
+			"<b>, <i>, <u>, <s>, <code>, <tg-spoiler>hidden text</tg-spoiler>.\n" +
+			"All <, > and & symbols that are not a part of a tag or an HTML entity " +
+			"must be replaced with the corresponding HTML entities " +
+			"(< with &lt;, > with &gt; and & with &amp;).\n" +
 			"Don't explain yourself. " +
 			"Do not introduce yourself, just answer the user concisely.\n\n",
 	}
