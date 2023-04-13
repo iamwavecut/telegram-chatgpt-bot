@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	openAIMaxTokens        = 2048
+	openAIMaxTokens        = 1800 // 2048, but we need to leave some for the metadata
 	openAITemperature      = 1
 	openAITopP             = 0.1
 	openAIN                = 1
@@ -128,6 +128,7 @@ func apiRequestRoutine(
 			"All <, > and & symbols that are not a part of a tag or an HTML entity " +
 			"must be replaced with the corresponding HTML entities " +
 			"(< with &lt;, > with &gt; and & with &amp;).\n" +
+			"Use naked newline instead of <br> tag.\n" +
 			"Don't explain yourself. " +
 			"Do not introduce yourself, just answer the user concisely.\n\n",
 	}
