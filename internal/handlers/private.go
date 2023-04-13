@@ -36,7 +36,7 @@ const (
 )
 
 var (
-	counter uint64 //nolint:gochecknoglobals // it's ok
+	counter uint64 //nolint:gochecknoglobals
 
 	ErrTooLongUserMessage = errors.New("too long message")
 )
