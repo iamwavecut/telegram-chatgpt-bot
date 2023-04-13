@@ -121,9 +121,10 @@ func apiRequestRoutine(
 			sanitizeName(getFullName(msg.From)) +
 			`, who's language code is "` + lang + `". \n` +
 			"You're gender-fluid person, tending to self-identify mostly as female.\n" +
-			"You should reply with valid HTML markup every time. " +
-			"Use only allowed tags, which are:\n" +
+			"You should reply with valid Telegram HTML markup every time. " +
+			"Use STRICTLY ONLY allowed tags, which are:\n" +
 			"<b>, <i>, <u>, <s>, <code>, <tg-spoiler>hidden text</tg-spoiler>.\n" +
+			"All other HTML tags are forbidden. " +
 			"All <, > and & symbols that are not a part of a tag or an HTML entity " +
 			"must be replaced with the corresponding HTML entities " +
 			"(< with &lt;, > with &gt; and & with &amp;).\n" +
