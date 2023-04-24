@@ -8,8 +8,8 @@ github.com/dlclark/regexp2 v1.9.0/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnm
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
 github.com/iamwavecut/tool v1.0.7 h1:f+NfwX0oJmrIJrFflG6jy6euJo/K507OYKbMbD9Rg5g=
 github.com/iamwavecut/tool v1.0.7/go.mod h1:D8DIv/UOk1AsEJYl+anmcLzbg1uHBVNQB0oeG/qWse0=
-github.com/mr-linch/go-tg v0.8.1 h1:SMqIIGxxW7VPz85YjGdecfGUKmQpsa7ohM1PdCfl1YM=
-github.com/mr-linch/go-tg v0.8.1/go.mod h1:RqBXq8CU28mspQkcwB2tzAPDPRynzmghzq1c3B5hSCI=
+github.com/mr-linch/go-tg v0.9.0 h1:bPRrFBOUeD1YaU8hPbufEgblVDfsyRPaSt++GeDo7Tk=
+github.com/mr-linch/go-tg v0.9.0/go.mod h1:RqBXq8CU28mspQkcwB2tzAPDPRynzmghzq1c3B5hSCI=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
