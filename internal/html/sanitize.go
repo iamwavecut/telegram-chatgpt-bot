@@ -1,6 +1,7 @@
 package html
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -19,13 +20,13 @@ func Sanitize(input string, allowedTags []string) (string, error) {
 
 		switch tokenType {
 		case html.ErrorToken: // End of the document
-			if tokenizer.Err() != io.EOF {
+			if !errors.Is(tokenizer.Err(), io.EOF) {
 				return output.String(), tokenizer.Err()
 			}
 			return output.String(), nil
 		case html.TextToken:
 			output.WriteString(html.EscapeString(token.Data))
-		case html.StartTagToken, html.EndTagToken:
+		case html.StartTagToken, html.EndTagToken, html.SelfClosingTagToken, html.CommentToken, html.DoctypeToken:
 			if tool.In(token.Data, allowedTags) {
 				tag := token.String()
 				tag = strings.ReplaceAll(tag, "&", "&amp;")

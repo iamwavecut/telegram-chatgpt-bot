@@ -95,6 +95,7 @@ func fabricateEncoder() func() tokenizer.Codec {
 	}
 }
 
+//nolint:funlen // TODO: refactor
 func apiRequestRoutine(
 	botName,
 	lang string,
