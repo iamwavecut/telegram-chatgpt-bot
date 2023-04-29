@@ -19,13 +19,14 @@ import (
 	"github.com/tiktoken-go/tokenizer"
 
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/config"
+	"github.com/iamwavecut/telegram-chatgpt-bot/internal/html"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/i18n"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/reg"
 	"github.com/iamwavecut/telegram-chatgpt-bot/resources/consts"
 )
 
 const (
-	openAIMaxTokens        = 1800 // 2048, but we need to leave some for the metadata
+	openAIMaxTokens        = 1900 // 2048, but we need to leave some for the metadata
 	openAITemperature      = 1
 	openAITopP             = 0.1
 	openAIN                = 1
@@ -179,6 +180,11 @@ func apiRequestRoutine(
 		return nil
 	}
 	botResponseText := resp.Choices[0].Message.Content
+	botResponseText, err = html.Sanitize(botResponseText, []string{"b", "i", "u", "s", "code", "tg-spoiler"})
+	if tool.Try(err) {
+		fmt.Print("F\n")
+		return err
+	}
 	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
 		Role:    "assistant",
 		Name:    sanitizeName(botName),
