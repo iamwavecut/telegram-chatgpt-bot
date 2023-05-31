@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/reg"
 	"github.com/mr-linch/go-tg/tgb"
 )
