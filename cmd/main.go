@@ -54,6 +54,11 @@ func run(ctx context.Context) error {
 			tgb.ChatType(tg.ChatTypePrivate),
 		).
 		Message(
+			handlers.Reset(),
+			tgb.Command("reset"),
+			tgb.ChatType(tg.ChatTypePrivate),
+		).
+		Message(
 			handlers.Private(botName, client, openaiClient, rateLimiter),
 			tgb.ChatType(tg.ChatTypePrivate),
 		).
