@@ -8,8 +8,8 @@ github.com/dlclark/regexp2 v1.10.0/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cn
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
 github.com/iamwavecut/tool v1.0.9 h1:UiSlM5WH0NOypj1JOMwbAJXBrv2SnrpqoVoJ2yDntHo=
 github.com/iamwavecut/tool v1.0.9/go.mod h1:vm6rHLjaCjyc0LwuDEuDHMZO91810eCFuChGdDEWRL8=
-github.com/mr-linch/go-tg v0.9.1 h1:4KNe7zwFG6svgM9w6pIcH3R7QWa6hIK8tCisQiFRCpU=
-github.com/mr-linch/go-tg v0.9.1/go.mod h1:276w69YW4pEo3ZYta+LQe4v/ut2w2h1ksP4ziBWkK98=
+github.com/mr-linch/go-tg v0.10.0 h1:Kl5JpH5ZU04Ad6YKhMHRvs7Ss0rvLknFlu166rL0bQ8=
+github.com/mr-linch/go-tg v0.10.0/go.mod h1:ySHBZ68Wl5Vgd6RAjNf9wbnwEN1P8deawEB/qr3GbDM=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
@@ -24,7 +24,7 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/objx v0.5.0 h1:1zr/of2m5FGMsad5YfcqgdqdWrIhu+EBEJRhR1U7z/c=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
-github.com/stretchr/testify v1.8.3 h1:RP3t2pwF7cMEbC1dqtB6poj3niw/9gnV4Cjg5oW5gtY=
+github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/tiktoken-go/tokenizer v0.1.0 h1:c1fXriHSR/NmhMDTwUDLGiNhHwTV+ElABGvqhCWLRvY=
 github.com/tiktoken-go/tokenizer v0.1.0/go.mod h1:7SZW3pZUKWLJRilTvWCa86TOVIiiJhYj3FQ5V3alWcg=
 github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce h1:fb190+cK2Xz/dvi9Hv8eCYJYvIGUTN2/KLq1pT6CjEc=
