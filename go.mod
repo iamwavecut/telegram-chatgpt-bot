@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/alexsergivan/transliterator v1.0.0
-	github.com/iamwavecut/tool v1.0.9
+	github.com/iamwavecut/tool v1.2.2
 	github.com/mr-linch/go-tg v0.10.0
 	github.com/sashabaranov/go-openai v1.15.2
 	github.com/sethvargo/go-envconfig v0.9.0
@@ -17,8 +17,7 @@ require (
 
 require (
 	github.com/dlclark/regexp2 v1.10.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
+	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 )
