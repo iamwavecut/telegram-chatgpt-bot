@@ -5,12 +5,11 @@ import (
 	"strings"
 	"sync"
 
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/config"
 	"github.com/iamwavecut/telegram-chatgpt-bot/resources"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var state = struct { //nolint:gochecknoglobals // desired behavior

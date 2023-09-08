@@ -15,8 +15,10 @@ type Config struct {
 	ChatGPTVersion   string `env:"CHATGPT_VERSION,default=3.5"`
 }
 
-var once sync.Once           //nolint:gochecknoglobals // desired behavior
-var globalConfig = &Config{} //nolint:gochecknoglobals // desired behavior
+var (
+	once         sync.Once   //nolint:gochecknoglobals // desired behavior
+	globalConfig = &Config{} //nolint:gochecknoglobals // desired behavior
+)
 
 func Get() Config {
 	once.Do(func() {

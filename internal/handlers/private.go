@@ -14,9 +14,8 @@ import (
 	"github.com/mr-linch/go-tg"
 	"github.com/mr-linch/go-tg/tgb"
 	"github.com/sashabaranov/go-openai"
-	"golang.org/x/time/rate"
-
 	"github.com/tiktoken-go/tokenizer"
+	"golang.org/x/time/rate"
 
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/config"
 	"github.com/iamwavecut/telegram-chatgpt-bot/internal/html"

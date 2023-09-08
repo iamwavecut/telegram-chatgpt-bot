@@ -8,9 +8,11 @@ type (
 	registry map[string]any
 )
 
-var instance registry //nolint:gochecknoglobals // desired behavior
-var once sync.Once    //nolint:gochecknoglobals // desired behavior
-var mx sync.Mutex     //nolint:gochecknoglobals // desired behavior
+var (
+	instance registry   //nolint:gochecknoglobals // desired behavior
+	once     sync.Once  //nolint:gochecknoglobals // desired behavior
+	mx       sync.Mutex //nolint:gochecknoglobals // desired behavior
+)
 
 func Get[T any](key string, defaults T) T {
 	once.Do(func() { instance = registry{} })

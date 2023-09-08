@@ -27,7 +27,7 @@ func Sanitize(input string, allowedTags []string) (string, error) {
 		case html.TextToken:
 			output.WriteString(html.EscapeString(token.Data))
 		case html.StartTagToken, html.EndTagToken, html.SelfClosingTagToken, html.CommentToken, html.DoctypeToken:
-			if tool.In(token.Data, allowedTags) {
+			if tool.In(token.Data, allowedTags...) {
 				tag := token.String()
 				tag = strings.ReplaceAll(tag, "&", "&amp;")
 				output.WriteString(tag)
