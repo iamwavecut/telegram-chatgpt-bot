@@ -102,10 +102,6 @@ func apiRequestRoutine(
 	openaiClient *openai.Client,
 	result chan string,
 ) error {
-	const (
-		chatGPT4 = "4"
-	)
-
 	instruction := openai.ChatCompletionMessage{
 		Role: "system",
 		Content: "Instruction:\n" +

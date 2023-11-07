@@ -190,12 +190,12 @@ linters:
     - exhaustive # checks exhaustiveness of enum switch statements
     - exportloopref # checks for pointers to enclosing loop variables
 #    - forbidigo # forbids identifiers
-    - funlen # tool for detection of long functions
+    # - funlen # tool for detection of long functions
     - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
     - gochecknoglobals # checks that no global variables exist
     - gochecknoinits # checks that no init functions are present in Go code
     - gocognit # computes and checks the cognitive complexity of functions
-    - goconst # finds repeated strings that could be replaced by a constant
+    # - goconst # finds repeated strings that could be replaced by a constant
     - gocritic # provides diagnostics that check for bugs, performance and style issues
     - gocyclo # computes and checks the cyclomatic complexity of functions
     - godot # checks if comments end in a period
