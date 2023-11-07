@@ -12,7 +12,7 @@ type Config struct {
 	TelegramAPIToken string `env:"BOT_TOKEN,required"`
 	OpenAIToken      string `env:"OPENAI_TOKEN,required"`
 	DefaultLanguage  string `env:"LANG,default=en"`
-	ChatGPTVersion   string `env:"CHATGPT_VERSION,default=3.5"`
+	ChatModel        string `env:"CHAT_MODEL,default=gpt-3.5-turbo-1106"`
 }
 
 var (

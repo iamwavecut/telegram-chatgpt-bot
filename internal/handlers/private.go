@@ -105,13 +105,6 @@ func apiRequestRoutine(
 	const (
 		chatGPT4 = "4"
 	)
-	var modelVersion string
-	switch config.Get().ChatGPTVersion {
-	case chatGPT4:
-		modelVersion = openai.GPT4
-	default:
-		modelVersion = openai.GPT3Dot5Turbo
-	}
 
 	instruction := openai.ChatCompletionMessage{
 		Role: "system",
@@ -160,7 +153,7 @@ func apiRequestRoutine(
 	resp, err := openaiClient.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:            modelVersion,
+			Model:            config.Get().ChatModel,
 			Messages:         append([]openai.ChatCompletionMessage{instruction}, chatHistory...),
 			MaxTokens:        openAIMaxTokens,
 			Temperature:      openAITemperature,
