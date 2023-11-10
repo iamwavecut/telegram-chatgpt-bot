@@ -12,8 +12,8 @@ github.com/mr-linch/go-tg v0.11.0 h1:vgL9TaKGHxA5Iid5bNyHUQMeTExwthVNJTkG2wHh2tA
 github.com/mr-linch/go-tg v0.11.0/go.mod h1:ySHBZ68Wl5Vgd6RAjNf9wbnwEN1P8deawEB/qr3GbDM=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/sashabaranov/go-openai v1.17.2 h1:Uj1Msqh43S9XhjUXYyOqOHMiRQtgQXCo5O0FeWZz7tU=
-github.com/sashabaranov/go-openai v1.17.2/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
+github.com/sashabaranov/go-openai v1.17.5 h1:ItBzlrrfTtkFWOFlgfOhk3y/xRBC4PJol4gdbiK7hgg=
+github.com/sashabaranov/go-openai v1.17.5/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
 github.com/sethvargo/go-envconfig v0.9.0 h1:Q6FQ6hVEeTECULvkJZakq3dZMeBQ3JUpcKMfPQbKMDE=
 github.com/sethvargo/go-envconfig v0.9.0/go.mod h1:Iz1Gy1Sf3T64TQlJSvee81qDhf7YIlt8GMUX6yyNFs0=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
