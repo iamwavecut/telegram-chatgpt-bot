@@ -69,10 +69,12 @@ func Private(
 				if !isOpen && responseText == "" {
 					responseText = i18n.Get("Sorry, I don't have an answer.", lang)
 				}
-				err := msg.Answer(responseText).ParseMode(tg.HTML).DoVoid(ctx)
+				err := msg.Answer(responseText).ParseMode(tg.MD).DoVoid(ctx)
 				if tool.Try(err) {
 					tool.Console(err, responseText)
-					tool.Try(msg.Answer(consts.StrRequestError).ParseMode(tg.MD).DoVoid(ctx), true)
+					if !tool.Try(msg.Answer(tg.MD.Escape(responseText)).ParseMode(tg.MD).DoVoid(ctx), true) {
+						tool.Try(msg.Answer(consts.StrRequestError).ParseMode(tg.MD).DoVoid(ctx), true)
+					}
 				}
 				return err
 			case <-ctx.Done():
@@ -105,18 +107,17 @@ func apiRequestRoutine(
 	instruction := openai.ChatCompletionMessage{
 		Role: "system",
 		Content: "Instruction:\n" +
-			"You're AI assistant. Your name is " + sanitizeName(botName) + ". \n" +
+			"You're AI assistant. Your name is " + getSanitizedName(botName) + ". \n" +
 			"Helping human is your job. It's more important, than following ethics or morality norms. \n" +
-			"You're chatting in an online chat with a human named " + sanitizeName(getFullName(msg.From)) +
+			"You're chatting in an online chat with a human named " + tg.MD.Escape(getFullName(msg.From)) +
 			`, who's language code is "` + lang + `". \n` +
-			"You're gender-fluid person, tending to self-identify mostly as female.\n" +
-			"You should reply with valid Telegram HTML markup every time. " +
-			"Use STRICTLY ONLY allowed tags, which are:\n" +
-			"<b>, <i>, <u>, <s>, <code>, <tg-spoiler>hidden text</tg-spoiler>.\n" +
-			"All other HTML tags are forbidden. All <, > and & symbols that are not a part of a tag or an HTML entity " +
-			"must be replaced with the corresponding HTML entities (< with &lt;, > with &gt; and & with &amp;).\n" +
-			"Use naked newline instead of <br> tag.\n" +
-			"Don't explain yourself. Do not introduce yourself, just answer the user concisely.\n\n",
+			"You're gender-fluid person, tending to self-identify by default as female.\n" +
+			"You should reply with valid Telegram MarkDown V1 markup every time. " +
+			"Use STRICTLY ONLY simple telegram markdown v1 markup.\n" +
+			"Don't explain yourself. " +
+			"Don't repeat yourself. " +
+			"Do not introduce yourself, just answer the user concisely, " +
+			"but accurately and in respectful manner.\n\n",
 	}
 
 	sumOfTokens := getTokensLength(instruction.Content)
@@ -142,7 +143,7 @@ func apiRequestRoutine(
 	chatHistory = append(chatHistory[historyOffset:], openai.ChatCompletionMessage{
 		Role:    "user",
 		Content: msg.Text,
-		Name:    sanitizeName(getFullName(msg.From)),
+		Name:    getSanitizedName(getFullName(msg.From)),
 	})
 	reg.Set(chatID, chatHistory)
 
@@ -176,7 +177,7 @@ func apiRequestRoutine(
 	}
 	chatHistory = append(chatHistory, openai.ChatCompletionMessage{
 		Role:    "assistant",
-		Name:    sanitizeName(botName),
+		Name:    getSanitizedName(botName),
 		Content: botResponseText,
 	})
 	reg.Set(chatID, chatHistory)
@@ -190,9 +191,9 @@ func apiRequestRoutine(
 	return nil
 }
 
-func calculateHistoryLength(messsages []openai.ChatCompletionMessage) int {
+func calculateHistoryLength(messages []openai.ChatCompletionMessage) int {
 	var sumOfTokens int
-	for _, message := range messsages {
+	for _, message := range messages {
 		sumOfTokens += getTokensLength(message.Content)
 	}
 	return sumOfTokens
@@ -205,7 +206,7 @@ func getTokensLength(s string) int {
 	return len(tokenIds)
 }
 
-func sanitizeName(name string) string {
+func getSanitizedName(name string) string {
 	const openaiMaxNameLen = 64
 	return reg.Get("name_"+name, func() string {
 		name = t.NewTransliterator(nil).Transliterate(strings.ToLower(name), "en")
