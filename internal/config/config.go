@@ -23,7 +23,7 @@ var (
 func Get() Config {
 	once.Do(func() {
 		cfg := &Config{}
-		tool.Must(envconfig.ProcessWith(context.Background(), cfg, envconfig.OsLookuper()))
+		tool.Must(envconfig.Process(context.Background(), cfg))
 		globalConfig = cfg
 	})
 	return *globalConfig
