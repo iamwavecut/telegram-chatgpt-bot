@@ -1,6 +1,8 @@
 module github.com/iamwavecut/telegram-chatgpt-bot
 
-go 1.18
+go 1.21
+
+toolchain go1.21.4
 
 require (
 	github.com/alexsergivan/transliterator v1.0.0
@@ -18,6 +20,6 @@ require (
 require (
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
-	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b // indirect
+	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
 	golang.org/x/sys v0.16.0 // indirect
 )
