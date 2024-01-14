@@ -8,7 +8,7 @@ require (
 	github.com/alexsergivan/transliterator v1.0.0
 	github.com/iamwavecut/tool v1.2.2
 	github.com/mr-linch/go-tg v0.11.0
-	github.com/sashabaranov/go-openai v1.17.10
+	github.com/sashabaranov/go-openai v1.17.11
 	github.com/sethvargo/go-envconfig v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tiktoken-go/tokenizer v0.1.0
