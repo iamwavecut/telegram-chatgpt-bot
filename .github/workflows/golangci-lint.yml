@@ -25,3 +25,4 @@ jobs:
           install-mode: binary
           version: latest
           only-new-issues: true
+          skip-cache: true
