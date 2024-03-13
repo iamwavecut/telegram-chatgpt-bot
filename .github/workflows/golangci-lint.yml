@@ -13,7 +13,6 @@ jobs:
   golangci:
     name: Run golangci-lint action
     needs: govet
-    if: ${{ needs.govet.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
