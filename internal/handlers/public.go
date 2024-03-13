@@ -23,7 +23,12 @@ func Public(me *tg.User) func(ctx context.Context, msg *tgb.MessageUpdate) error
 			i18n.Get(consts.StrNoPublic, msg.From.LanguageCode),
 		).
 			ParseMode(tg.MD).
-			ReplyToMessageID(msg.ID).
+			ReplyParameters(tg.ReplyParameters{
+				MessageID: msg.Message.ID,
+				ChatID:    msg.Message.Chat.ID,
+
+				AllowSendingWithoutReply: true,
+			}).
 			ReplyMarkup(tg.NewInlineKeyboardMarkup(layout.Keyboard()...)).
 			DoVoid(ctx)
 	}

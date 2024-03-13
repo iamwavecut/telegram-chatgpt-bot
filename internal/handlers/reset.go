@@ -9,7 +9,7 @@ import (
 )
 
 func Reset() func(ctx context.Context, msg *tgb.MessageUpdate) error {
-	return func(ctx context.Context, msg *tgb.MessageUpdate) error {
+	return func(_ context.Context, msg *tgb.MessageUpdate) error {
 		reg.Delete("chat_" + msg.From.ID.PeerID())
 		return nil
 	}

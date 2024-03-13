@@ -201,9 +201,9 @@ func calculateHistoryLength(messages []openai.ChatCompletionMessage) int {
 
 func getTokensLength(s string) int {
 	enc := fabricateEncoder()()
-	tokenIds, _, err := enc.Encode(s)
+	tokenIDs, _, err := enc.Encode(s)
 	tool.Try(err, true)
-	return len(tokenIds)
+	return len(tokenIDs)
 }
 
 func getSanitizedName(name string) string {
