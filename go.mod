@@ -6,7 +6,7 @@ toolchain go1.22.1
 
 require (
 	github.com/alexsergivan/transliterator v1.0.0
-	github.com/iamwavecut/tool v1.2.2
+	github.com/iamwavecut/tool v1.2.3
 	github.com/mr-linch/go-tg v0.15.0
 	github.com/sashabaranov/go-openai v1.24.1
 	github.com/sethvargo/go-envconfig v1.0.3
