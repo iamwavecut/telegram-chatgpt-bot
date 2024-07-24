@@ -16,7 +16,7 @@ You will need to provide the following arguments to the build command:
 docker build -t telegram-chatgpt-bot . \
   --build-arg OPENAI_TOKEN=<required, your_api_token> \
   --build-arg BOT_TOKEN=<required, your_bot_token> \
-  --build-arg CHAT_MODEL=<optional, defaults to 'gpt-3.5-turbo-1106'> 
+  --build-arg CHAT_MODEL=<optional, defaults to 'gpt-4o-mini'> 
 ```
 
 You can also run the bot locally
