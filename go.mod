@@ -8,7 +8,7 @@ require (
 	github.com/alexsergivan/transliterator v1.0.1
 	github.com/iamwavecut/tool v1.2.3
 	github.com/mr-linch/go-tg v0.15.0
-	github.com/sashabaranov/go-openai v1.26.3
+	github.com/sashabaranov/go-openai v1.27.0
 	github.com/sethvargo/go-envconfig v1.1.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tiktoken-go/tokenizer v0.1.1
@@ -20,6 +20,6 @@ require (
 require (
 	github.com/dlclark/regexp2 v1.11.2 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
+	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 )
