@@ -12,7 +12,7 @@ require (
 	github.com/sethvargo/go-envconfig v1.1.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/tiktoken-go/tokenizer v0.2.0
-	golang.org/x/net v0.29.0
+	golang.org/x/net v0.30.0
 	golang.org/x/time v0.6.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -21,5 +21,5 @@ require (
 	github.com/dlclark/regexp2 v1.11.4 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 )
